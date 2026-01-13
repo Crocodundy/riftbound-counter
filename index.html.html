@@ -11,9 +11,30 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- ✅ FORCER LE MODE PAYSAGE -->
+    <meta name="screen-orientation" content="landscape">
+    <meta name="x5-orientation" content="landscape">
+    <meta name="x5-fullscreen" content="true">
+    
     <link rel="apple-touch-icon" href="icon-192.png">
+
     
     <style>
+	/* ==================== FORCER LE MODE PAYSAGE ==================== */
+@media screen and (orientation:portrait) {
+    html {
+        transform: rotate(-90deg);
+        transform-origin: left top;
+        width: 100vh;
+        height: 100vw;
+        overflow-x: hidden;
+        position: absolute;
+        top: 100%;
+        left: 0;
+    }
+}
+
         * {
             margin: 0;
             padding: 0;
@@ -737,6 +758,21 @@
         if (localStorage.getItem('installDismissed')) {
             document.getElementById('installPrompt').classList.remove('show');
         }
+		// ==================== GESTION DE L'ORIENTATION ====================
+function checkOrientation() {
+    if (window.innerHeight > window.innerWidth) {
+        // Mode portrait détecté
+        alert("⚠️ Veuillez tourner votre téléphone en mode paysage pour une meilleure expérience !");
+    }
+}
+
+// Vérifier au chargement
+window.addEventListener('load', checkOrientation);
+
+// Vérifier quand l'utilisateur tourne le téléphone
+window.addEventListener('orientationchange', checkOrientation);
+window.addEventListener('resize', checkOrientation);
+
     </script>
 </body>
 </html>
