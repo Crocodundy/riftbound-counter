@@ -20,25 +20,19 @@
     <link rel="apple-touch-icon" href="icon-192.png">
 
     
-    <style>
-    /* ==================== FORCER LE MODE PAYSAGE ==================== */
-    @media screen and (orientation:portrait) {
-        html {
-            transform: rotate(-90deg);
-            transform-origin: left top;
-            width: 100vh;
-            height: 100vw;
-            overflow-x: hidden;
-            position: absolute;
-            top: 100%;
-            left: 0;
-        }
-    }
-
+   <style>
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        position: fixed;
     }
 
     body {
@@ -47,24 +41,43 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        min-height: 100vh;
-        overflow: hidden;
         -webkit-touch-callout: none;
         -webkit-user-select: none;
         user-select: none;
     }
 
-    /* MENU DE SÉLECTION */
+    /* ==================== FORCER MODE PAYSAGE (simplifié) ==================== */
+    @media screen and (orientation: portrait) {
+        body::before {
+            content: "Tournez votre appareil →";
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: white;
+            text-align: center;
+            z-index: 9999;
+            background: rgba(0,0,0,0.9);
+            padding: 30px;
+            border-radius: 15px;
+        }
+        
+        .menu-container,
+        .game-container {
+            filter: blur(10px);
+            pointer-events: none;
+        }
+    }
+
+    /* ==================== MENU ==================== */
     .menu-container {
         position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: clamp(15px, 3vh, 30px);
-        padding: clamp(20px, 5vh, 50px);
         width: 100vw;
         height: 100vh;
+        display: flex;
         justify-content: center;
+        align-items: center;
     }
 
     .menu-background {
@@ -83,39 +96,33 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: clamp(15px, 3vh, 30px);
+        gap: 3vh;
+        padding: 2vh;
     }
 
     .menu-title {
-        font-size: clamp(24px, 6vw, 48px);
+        font-size: 5vh;
         font-weight: bold;
         color: white;
         text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
-        margin-bottom: clamp(10px, 2vh, 20px);
+        margin-bottom: 2vh;
+        white-space: nowrap;
     }
 
     .menu-buttons {
         display: flex;
         flex-direction: column;
-        gap: clamp(10px, 2vh, 20px);
+        gap: 2vh;
+        align-items: center;
     }
 
     .menu-btn {
         background: transparent;
         border: none;
-        color: white;
-        font-size: clamp(18px, 4vw, 32px);
-        font-weight: bold;
-        padding: clamp(3px, 1vh, 5px) clamp(30px, 8vw, 60px);
+        padding: 0;
         cursor: pointer;
-        text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
         transition: all 0.3s ease;
         user-select: none;
-    }
-
-    .menu-btn:hover {
-        transform: scale(1.1);
-        text-shadow: 4px 4px 8px rgba(0,0,0,1);
     }
 
     .menu-btn:active {
@@ -123,12 +130,13 @@
     }
 
     .menu-btn img {
-        width: clamp(150px, 30vw, 250px);
-        height: auto;
+        height: 8vh;
+        width: auto;
         display: block;
+        filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.8));
     }
 
-    /* CONTENEUR DE JEU */
+    /* ==================== JEU ==================== */
     .game-container {
         position: relative;
         width: 100vw;
@@ -144,6 +152,8 @@
 
     .background-image {
         position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         object-fit: contain;
@@ -157,13 +167,13 @@
         z-index: 2;
     }
 
-    /* Bouton retour menu avec image */
+    /* ==================== BOUTON RETOUR ==================== */
     .back-button {
         position: absolute;
-        top: clamp(10px, 2vh, 20px);
-        left: clamp(10px, 2vw, 20px);
-        width: clamp(50px, 8vw, 80px);
-        height: clamp(50px, 8vh, 80px);
+        top: 1.5vh;
+        left: 1.5vw;
+        width: 7vh;
+        height: 7vh;
         background: none;
         border: none;
         cursor: pointer;
@@ -179,135 +189,95 @@
         filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.8));
     }
 
-    .back-button:hover {
-        transform: translateY(-3px) scale(1.05);
-    }
-
     .back-button:active {
-        transform: translateY(0) scale(0.95);
+        transform: scale(0.9);
     }
 
-    /* Style pour les nombres affichés */
+    /* ==================== COMPTEURS ==================== */
     .counter-display {
         position: absolute;
-        font-size: clamp(36px, 7vw, 60px);
+        font-size: 6vh;
         font-weight: bold;
         color: white;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
         display: flex;
         justify-content: center;
         align-items: center;
-        cursor: pointer;
         user-select: none;
-    }
-    
-    .counter-display:active {
-        transform: scale(0.95);
+        pointer-events: none;
     }
 
-    /* Boutons transparents */
+    /* ==================== BOUTONS +/- ==================== */
     .btn {
         position: absolute;
         background: none;
         border: none;
-        font-size: clamp(24px, 4vw, 50px);
+        font-size: 5vh;
         font-weight: bold;
         color: white;
         cursor: pointer;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-        padding: clamp(3px, 1vh, 5px);
         user-select: none;
-        min-width: 40px;
-        min-height: 40px;
+        width: 8vh;
+        height: 8vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
     }
 
     .btn:active {
-        transform: scale(0.95);
+        transform: scale(0.9);
     }
 
-    .btn:hover {
-        transform: scale(1.05);
-    }
-
-    /* Boutons reset transparents */
+    /* ==================== BOUTONS RESET ==================== */
     .btn-reset {
         position: absolute;
         background: none;
         border: none;
-        font-size: clamp(24px, 4vw, 32px);
+        font-size: 4vh;
         font-weight: bold;
         color: white;
         cursor: pointer;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-        padding: clamp(3px, 1vh, 5px);
         user-select: none;
-        min-width: 40px;
-        min-height: 40px;
+        width: 6vh;
+        height: 6vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
     }
 
     .btn-reset:active {
-        transform: scale(0.95);
-    }
-
-    .btn-reset:hover {
-        transform: scale(1.05);
+        transform: scale(0.9);
     }
 
     /* ==================== MODE 1V1 ==================== */
     /* VIE */
-    #life-1v1-1 { 
-        top: 45%; 
-        left: 4.3%; 
-        width: clamp(60px, 10vw, 80px); 
-        height: clamp(60px, 10vh, 80px); 
-    }
+    #life-1v1-1 { top: 45%; left: 4.3%; width: 8vh; height: 8vh; }
     #minus-life-1v1-1 { top: 61.7%; left: 3.5%; }
     #plus-life-1v1-1 { top: 32.5%; left: 3.4%; }
 
-    #life-1v1-2 { 
-        top: 45%; 
-        right: 4.6%; 
-        width: clamp(60px, 10vw, 80px); 
-        height: clamp(60px, 10vh, 80px); 
-    }
+    #life-1v1-2 { top: 45%; right: 4.6%; width: 8vh; height: 8vh; }
     #minus-life-1v1-2 { top: 61.7%; right: 3.7%; }
     #plus-life-1v1-2 { top: 32.5%; right: 3.7%; }
 
     /* MIGHT HAUT */
-    #might-1v1-1 { 
-        top: 35.5%; 
-        left: 22.4%; 
-        width: clamp(45px, 8vw, 60px); 
-        height: clamp(45px, 8vh, 60px); 
-    }
+    #might-1v1-1 { top: 35.5%; left: 22.4%; width: 6vh; height: 6vh; }
     #minus-might-1v1-1 { top: 26.8%; left: 17.8%; }
     #plus-might-1v1-1 { top: 26.3%; left: 28.35%; }
 
-    #might-1v1-2 { 
-        top: 35.5%; 
-        right: 22.8%; 
-        width: clamp(45px, 8vw, 60px); 
-        height: clamp(45px, 8vh, 60px); 
-    }
+    #might-1v1-2 { top: 35.5%; right: 22.8%; width: 6vh; height: 6vh; }
     #minus-might-1v1-2 { top: 26.8%; right: 29.1%; }
     #plus-might-1v1-2 { top: 26.3%; right: 18.55%; }
 
     /* MIGHT BAS */
-    #might-1v1-4 { 
-        bottom: 35.5%; 
-        left: 22.3%; 
-        width: clamp(45px, 8vw, 60px); 
-        height: clamp(45px, 8vh, 60px); 
-    }
+    #might-1v1-4 { bottom: 35.5%; left: 22.3%; width: 6vh; height: 6vh; }
     #minus-might-1v1-4 { bottom: 26.8%; left: 28.4%; }
     #plus-might-1v1-4 { bottom: 26.4%; left: 17.8%; }
 
-    #might-1v1-5 { 
-        bottom: 35.5%; 
-        right: 23.1%; 
-        width: clamp(45px, 8vw, 60px); 
-        height: clamp(45px, 8vh, 60px); 
-    }
+    #might-1v1-5 { bottom: 35.5%; right: 23.1%; width: 6vh; height: 6vh; }
     #minus-might-1v1-5 { bottom: 26.8%; right: 18.5%; }
     #plus-might-1v1-5 { bottom: 26.4%; right: 29.1%; }
 
@@ -317,176 +287,86 @@
 
     /* ==================== MODE 2V2 ==================== */
     /* VIE */
-    #life-2v2-1 { 
-        top: 45%; 
-        left: 4.3%; 
-        width: clamp(60px, 10vw, 80px); 
-        height: clamp(60px, 10vh, 80px); 
-    }
+    #life-2v2-1 { top: 45%; left: 4.3%; width: 8vh; height: 8vh; }
     #minus-life-2v2-1 { top: 61.7%; left: 3.5%; }
     #plus-life-2v2-1 { top: 32.5%; left: 3.4%; }
 
-    #life-2v2-2 { 
-        top: 45%; 
-        right: 4.6%; 
-        width: clamp(60px, 10vw, 80px); 
-        height: clamp(60px, 10vh, 80px); 
-    }
+    #life-2v2-2 { top: 45%; right: 4.6%; width: 8vh; height: 8vh; }
     #minus-life-2v2-2 { top: 61.7%; right: 3.7%; }
     #plus-life-2v2-2 { top: 32.5%; right: 3.7%; }
 
     /* MIGHT HAUT */
-    #might-2v2-1 { 
-        top: 35.5%; 
-        left: 22.4%; 
-        width: clamp(45px, 8vw, 60px); 
-        height: clamp(45px, 8vh, 60px); 
-    }
+    #might-2v2-1 { top: 35.5%; left: 22.4%; width: 6vh; height: 6vh; }
     #minus-might-2v2-1 { top: 26.8%; left: 17.8%; }
     #plus-might-2v2-1 { top: 26.3%; left: 28.35%; }
 
-    #might-2v2-2 { 
-        top: 35.5%; 
-        left: 48.2%; 
-        width: clamp(45px, 8vw, 60px); 
-        height: clamp(45px, 8vh, 60px); 
-    }
+    #might-2v2-2 { top: 35.5%; left: 48.2%; width: 6vh; height: 6vh; }
     #minus-might-2v2-2 { top: 26.8%; left: 43.65%; }
     #plus-might-2v2-2 { top: 26.3%; left: 54.2%; }
 
-    #might-2v2-3 { 
-        top: 35.5%; 
-        right: 22.8%; 
-        width: clamp(45px, 8vw, 60px); 
-        height: clamp(45px, 8vh, 60px); 
-    }
+    #might-2v2-3 { top: 35.5%; right: 22.8%; width: 6vh; height: 6vh; }
     #minus-might-2v2-3 { top: 26.8%; right: 29.1%; }
     #plus-might-2v2-3 { top: 26.3%; right: 18.55%; }
 
     /* MIGHT BAS */
-    #might-2v2-4 { 
-        bottom: 35.5%; 
-        left: 22.3%; 
-        width: clamp(45px, 8vw, 60px); 
-        height: clamp(45px, 8vh, 60px); 
-    }
+    #might-2v2-4 { bottom: 35.5%; left: 22.3%; width: 6vh; height: 6vh; }
     #minus-might-2v2-4 { bottom: 26.8%; left: 28.4%; }
     #plus-might-2v2-4 { bottom: 26.4%; left: 17.8%; }
 
-    #might-2v2-5 { 
-        bottom: 35.5%; 
-        left: 48.1%; 
-        width: clamp(45px, 8vw, 60px); 
-        height: clamp(45px, 8vh, 60px); 
-    }
+    #might-2v2-5 { bottom: 35.5%; left: 48.1%; width: 6vh; height: 6vh; }
     #minus-might-2v2-5 { bottom: 26.8%; left: 54.2%; }
     #plus-might-2v2-5 { bottom: 26.4%; left: 43.65%; }
 
-    #might-2v2-6 { 
-        bottom: 35.5%; 
-        right: 23.1%; 
-        width: clamp(45px, 8vw, 60px); 
-        height: clamp(45px, 8vh, 60px); 
-    }
+    #might-2v2-6 { bottom: 35.5%; right: 23.1%; width: 6vh; height: 6vh; }
     #minus-might-2v2-6 { bottom: 26.8%; right: 18.5%; }
     #plus-might-2v2-6 { bottom: 26.4%; right: 29.1%; }
 
     /* RESET */
     #reset-b1-2v2 { top: 47.4%; left: 17.2%; }
     #reset-b2-2v2 { top: 47.4%; left: 43%; }
-    #reset-b3-2v2 { top: 47.4%; right:29%; }
+    #reset-b3-2v2 { top: 47.4%; right: 29%; }
 
     /* ==================== MODE 4 JOUEURS ==================== */
     /* VIE */
-    #life-4p-1 { 
-        top: 8%; 
-        left: 11.9%; 
-        width: clamp(60px, 10vw, 80px); 
-        height: clamp(60px, 10vh, 80px); 
-    }
+    #life-4p-1 { top: 8%; left: 11.9%; width: 8vh; height: 8vh; }
     #minus-life-4p-1 { top: 23%; left: 11.25%; }
     #plus-life-4p-1 { top: 6%; left: 19.35%; }
 
-    #life-4p-2 { 
-        top: 8.2%; 
-        right: 11.9%; 
-        width: clamp(60px, 10vw, 80px); 
-        height: clamp(60px, 10vh, 80px); 
-    }
+    #life-4p-2 { top: 8.2%; right: 11.9%; width: 8vh; height: 8vh; }
     #minus-life-4p-2 { top: 23%; right: 11.35%; }
     #plus-life-4p-2 { top: 6%; right: 19.5%; }
 
-    #life-4p-3 { 
-        bottom: 7.5%; 
-        left: 11.99%; 
-        width: clamp(60px, 10vw, 80px); 
-        height: clamp(60px, 10vh, 80px); 
-    }
+    #life-4p-3 { bottom: 7.5%; left: 11.99%; width: 8vh; height: 8vh; }
     #minus-life-4p-3 { bottom: 22.5%; left: 11.3%; }
     #plus-life-4p-3 { bottom: 5.2%; left: 19.4%; }
 
-    #life-4p-4 { 
-        bottom: 7.7%; 
-        right: 12.1%; 
-        width: clamp(60px, 10vw, 80px); 
-        height: clamp(60px, 10vh, 80px); 
-    }
+    #life-4p-4 { bottom: 7.7%; right: 12.1%; width: 8vh; height: 8vh; }
     #minus-life-4p-4 { bottom: 22.5%; right: 11.4%; }
     #plus-life-4p-4 { bottom: 5.2%; right: 19.6%; }
 
     /* MIGHT HAUT */
-    #might-4p-1 { 
-        top: 36.6%; 
-        left: 25.3%; 
-        width: clamp(45px, 8vw, 60px); 
-        height: clamp(45px, 8vh, 60px); 
-    }
+    #might-4p-1 { top: 36.6%; left: 25.3%; width: 6vh; height: 6vh; }
     #minus-might-4p-1 { top: 29.3%; left: 21.3%; }
     #plus-might-4p-1 { top: 28.9%; left: 30.75%; }
 
-    #might-4p-2 { 
-        top: 36.6%; 
-        left: 48.4%; 
-        width: clamp(45px, 8vw, 60px); 
-        height: clamp(45px, 8vh, 60px); 
-    }
+    #might-4p-2 { top: 36.6%; left: 48.4%; width: 6vh; height: 6vh; }
     #minus-might-4p-2 { top: 29.3%; left: 44.4%; }
     #plus-might-4p-2 { top: 28.9%; left: 53.8%; }
 
-    #might-4p-3 { 
-        top: 36.6%; 
-        right: 25.75%; 
-        width: clamp(45px, 8vw, 60px); 
-        height: clamp(45px, 8vh, 60px); 
-    }
+    #might-4p-3 { top: 36.6%; right: 25.75%; width: 6vh; height: 6vh; }
     #minus-might-4p-3 { top: 29.3%; right: 31.1%; }
     #plus-might-4p-3 { top: 28.9%; right: 21.7%; }
 
     /* MIGHT BAS */
-    #might-4p-4 { 
-        bottom: 36.3%; 
-        left: 25.4%; 
-        width: clamp(45px, 8vw, 60px); 
-        height: clamp(45px, 8vh, 60px); 
-    }
+    #might-4p-4 { bottom: 36.3%; left: 25.4%; width: 6vh; height: 6vh; }
     #minus-might-4p-4 { bottom: 28.8%; left: 30.85%; }
     #plus-might-4p-4 { bottom: 28.4%; left: 21.4%; }
 
-    #might-4p-5 { 
-        bottom: 36.3%; 
-        left: 48.4%; 
-        width: clamp(45px, 8vw, 60px); 
-        height: clamp(45px, 8vh, 60px); 
-    }
+    #might-4p-5 { bottom: 36.3%; left: 48.4%; width: 6vh; height: 6vh; }
     #minus-might-4p-5 { bottom: 28.8%; left: 53.9%; }
     #plus-might-4p-5 { bottom: 28.3%; left: 44.45%; }
 
-    #might-4p-6 { 
-        bottom: 36.3%; 
-        right: 25.65%; 
-        width: clamp(45px, 8vw, 60px); 
-        height: clamp(45px, 8vh, 60px); 
-    }
+    #might-4p-6 { bottom: 36.3%; right: 25.65%; width: 6vh; height: 6vh; }
     #minus-might-4p-6 { bottom: 28.75%; right: 21.7%; }
     #plus-might-4p-6 { bottom: 28.4%; right: 31.15%; }
 
@@ -495,22 +375,23 @@
     #reset-b2-4p { top: 47.6%; left: 43.9%; }
     #reset-b3-4p { top: 47.6%; right: 31.1%; }
 
-    /* Install prompt */
+    /* ==================== INSTALL PROMPT ==================== */
     .install-prompt {
         position: fixed;
-        bottom: clamp(10px, 2vh, 20px);
+        bottom: 2vh;
         left: 50%;
         transform: translateX(-50%);
         background: rgba(13, 77, 92, 0.95);
         color: white;
-        padding: clamp(10px, 2vh, 15px) clamp(20px, 4vw, 30px);
+        padding: 2vh 3vw;
         border-radius: 10px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         z-index: 1000;
         display: none;
         flex-direction: column;
-        gap: 10px;
+        gap: 1vh;
         max-width: 90vw;
+        font-size: 2vh;
     }
 
     .install-prompt.show {
@@ -521,33 +402,15 @@
         background: white;
         color: #0d4d5c;
         border: none;
-        padding: clamp(8px, 2vh, 10px) clamp(15px, 3vw, 20px);
+        padding: 1.5vh 3vw;
         border-radius: 5px;
         font-weight: bold;
         cursor: pointer;
-        font-size: clamp(14px, 2.5vw, 16px);
+        font-size: 2vh;
     }
 
-    .install-prompt button:hover {
-        opacity: 0.9;
-    }
-
-    /* Amélioration tactile pour mobile */
-    @media (hover: none) and (pointer: coarse) {
-        .btn, .btn-reset, .menu-btn, .back-button {
-            cursor: default;
-        }
-        
-        /* Zone de touch plus grande pour les petits boutons */
-        .btn::before, .btn-reset::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: max(100%, 44px);
-            height: max(100%, 44px);
-        }
+    .install-prompt button:active {
+        opacity: 0.8;
     }
 </style>
 
@@ -899,4 +762,5 @@ window.addEventListener('resize', checkOrientation);
     </script>
 </body>
 </html>
+
 
